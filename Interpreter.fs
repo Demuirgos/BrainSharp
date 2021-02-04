@@ -72,10 +72,10 @@ module Interpreter
                                                         state with Index = state.Index + 1
                                                        } (match c with ']' -> (acc - 1) | '[' -> (acc + 1) | _ -> acc)
                                 (state, acc + 1) ||> consume ||> loop
-                            | _ -> Ok {state with Index = state.Index + 1} |> loop 0
+                            | _ -> Ok {state with Index = state.Index + 1} |> loop acc
                         | ']' ->
                             match state.Memory.[state.Pointer]  with 
-                            | 0 -> Ok {state with Index = state.Index + 1} |> loop 0
+                            | 0 -> Ok {state with Index = state.Index + 1} |> loop acc
                             | _ -> 
                                 let rec consume state acc= 
                                     match (acc, is.[state.Index], is.[state.Index - 1]) with 

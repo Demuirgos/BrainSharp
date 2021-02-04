@@ -2,8 +2,17 @@ open System
 open Interpreter
 
 [<EntryPoint>]
-let main argv =
-    let arg = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
-    let result = interpret arg
-    printfn "%A %d" result (arg.Length)
-    0 
+let REPL =
+    let prefix = "# >"
+    let read = Console.ReadLine >> sprintf "%s"
+    let eval = interpret
+    let print= 
+        function 
+        | Some(result)  ->  printfn "%s" result
+                            prefix
+        | _ -> printfn ""
+               prefix
+    let rec loop prefix = 
+        prefix |> printf "%s"
+        |> read |> interpret |> print |> loop
+    loop prefix

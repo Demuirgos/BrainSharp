@@ -41,26 +41,22 @@ module Interpreter
                                         } 
                                     | '>' ->
                                         if state.Memory.Length - 1 = state.Pointer then
-                                            acc, Ok { state with 
-                                                            Memory  = state.Memory@List.init 32 (fun _ -> 0)
-                                                            Pointer = state.Pointer + 1
-                                                            Index   = state.Index + 1 
+                                            acc, Ok { state with Memory  = state.Memory@List.init 32 (fun _ -> 0)
+                                                                 Pointer = state.Pointer + 1
+                                                                 Index   = state.Index + 1 
                                             }
                                         else 
-                                            acc, Ok { state with 
-                                                            Pointer = state.Pointer + 1 
-                                                            Index   = state.Index + 1
+                                            acc, Ok { state with Pointer = state.Pointer + 1 
+                                                                 Index   = state.Index + 1
                                             }
                                     | '+' ->
-                                        acc, Ok { state with 
-                                                        Memory = List.mapi (fun i e -> if i <> state.Pointer then e else e + 1) state.Memory
-                                                        Index = state.Index + 1
+                                        acc, Ok { state with Memory = List.mapi (fun i e -> if i <> state.Pointer then e else e + 1) state.Memory
+                                                             Index = state.Index + 1
                                         }
                                     | '-' ->
-                                        acc , Ok { state with 
-                                                                        Memory = List.mapi (fun i e -> if i <> state.Pointer then e else e - 1) state.Memory 
-                                                                        Index = state.Index + 1
-                                                        }  
+                                        acc , Ok { state with Memory = List.mapi (fun i e -> if i <> state.Pointer then e else e - 1) state.Memory 
+                                                              Index = state.Index + 1
+                                        }  
                                     | '[' ->
                                         match state.Memory.[state.Pointer] with 
                                         | 0 -> 
@@ -118,7 +114,7 @@ module Interpreter
         |> function
                     | Some (Ok(State(_,_,Bucket(o))))    -> o
                                                           |> List.rev
-                                                          |> List.map (fun i -> string(i))
+                                                          |> List.map string
                                                           |> String.concat ""
                                                           |> Some 
                     | Some (Ok(State(_,_,Empty))) | None -> None

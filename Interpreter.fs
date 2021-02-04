@@ -24,7 +24,7 @@ module Interpreter
         member this.Length = match this.Program with 
                              | Instructions(is) -> List.length is
                              | _ -> -1 
-            
+    let (|State|) s = s.Memory, s.Program, s.Output
     let interpret program=
         let rec loop acc stream =
             match stream with 
@@ -105,26 +105,22 @@ module Interpreter
                                 | Idle -> acc, Error("Program Empty")
                     next ||> loop
             | Error(_) as e -> e
-        match Seq.toList program with
-        | [] -> None
-        | chars -> 
-            {
-                State.Default with Program = Instructions chars
-            } |> (Some << loop 0 << Ok) |> 
-            function
-            | Some (Ok({Memory  = _
-                        Index   = _
-                        Pointer = _
-                        Program = _
-                        Output  = Bucket(o)})) -> o
-                                                  |> List.rev
-                                                  |> List.map (fun i -> string(i))
-                                                  |> String.concat ""
-                                                  |> Some 
-            | Some (Ok({Memory  = _
-                        Index   = _
-                        Pointer = _
-                        Program = _
-                        Output  = Empty})) | None  -> None
-            | Some(Error(msg)) -> Some msg
-    
+        let result =    match Seq.toList program with
+                        | [] -> {
+                            State.Default with Program = Idle
+                            }
+                        | chars -> 
+                            {
+                                State.Default with Program = Instructions chars
+                            } 
+        result  
+        |> (Some << loop 0 << Ok) 
+        |> function
+                    | Some (Ok(State(_,_,Bucket(o))))    -> o
+                                                          |> List.rev
+                                                          |> List.map (fun i -> string(i))
+                                                          |> String.concat ""
+                                                          |> Some 
+                    | Some (Ok(State(_,_,Empty))) | None -> None
+                    | Some(Error(msg)) -> Some msg
+                

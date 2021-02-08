@@ -103,10 +103,9 @@ module Interpreter
             | Error(_) as e -> e
         let result =    match Seq.toList program with
                         | [] -> {
-                            State.Default with Program = Idle
+                                State.Default with Program = Idle
                             }
-                        | chars -> 
-                            {
+                        | chars -> {
                                 State.Default with Program = Instructions chars
                             } 
         result  

@@ -14,5 +14,5 @@ let REPL =
                prefix
     let rec loop prefix = 
         prefix |> printf "%s"
-        |> read |> interpret |> print |> loop
+        |> read |> eval |> print |> loop
     loop prefix
